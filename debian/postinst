@@ -1,0 +1,2 @@
+#!/bin/sh
+adduser --system --home /var/lib/bitwarden_rs bitwarden

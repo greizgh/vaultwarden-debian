@@ -1,0 +1,13 @@
+[Unit]
+Description=Bitwarden API server
+After=network.target
+
+[Service]
+Type=simple
+User=bitwarden
+ExecStart=/usr/local/bin/bitwarden_rs
+WorkingDirectory=/etc/bitwarden_rs
+EnvironmentFile=/etc/bitwarden_rs/config.env
+
+[Install]
+WantedBy=multi-user.target
