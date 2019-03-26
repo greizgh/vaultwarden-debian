@@ -2,15 +2,21 @@
 
 set -e
 
-if [ -d "$1/git" ]; then
-  cd "$1/git" || exit
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SRC="$DIR/git"
+DST="$DIR/dist"
+
+if [ -d "$SRC" ]; then
+  cd "$SRC" || exit
   git pull
   cd - || exit
 else
-  git clone https://github.com/dani-garcia/bitwarden_rs.git "$1/git"
+  git clone https://github.com/dani-garcia/bitwarden_rs.git "$SRC"
 fi
-docker build -t bitwarden-deb "$1"
+mkdir -p "$DST"
+
+docker build -t bitwarden-deb "$DIR"
+
 CID=$(docker run -d bitwarden-deb)
-mkdir -p "$1/build"
-docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$1/build"
+docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST"
 docker rm "$CID"
