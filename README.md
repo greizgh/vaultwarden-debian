@@ -17,3 +17,11 @@ git clone https://github.com/greizgh/bitwarden_rs-debian.git
 cd bitwarden_rs-debian
 ./build.sh
 ```
+
+## Post installation
+
+The packaged systemd unit is **disabled**, you need to configure bitwarden_rs through its
+[EnvFile](https://www.freedesktop.org/software/systemd/man/systemd.service.html#Command%20lines):
+`/etc/bitwarden_rs/config.env`
+
+You will also probably want to setup a reverse proxy.
