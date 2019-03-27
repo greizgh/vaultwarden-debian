@@ -9,6 +9,7 @@ This repository will help you producing a debian package.
 Make sure you have the required build dependencies:
 * docker
 * git
+* patch
 
 Then:
 

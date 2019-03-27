@@ -24,6 +24,9 @@ sed -i "s#\# WEB_VAULT_FOLDER=web-vault/#WEB_VAULT_FOLDER=/usr/share/bitwarden_r
 
 mkdir -p "$DST"
 
+# Prepare Dockerfile
+patch -i "$DIR/Dockerfile.patch" "$SRC/Dockerfile" -o "$DIR/Dockerfile"
+
 docker build -t bitwarden-deb "$DIR"
 
 CID=$(docker run -d bitwarden-deb)
