@@ -2,7 +2,7 @@
 
 [Bitwarden_rs](https://github.com/dani-garcia/bitwarden_rs) is an "Unofficial Bitwarden compatible server written in Rust".
 
-This repository will help you producing a debian package.
+This repository will help you produce a debian package.
 
 ## TL;DR
 
