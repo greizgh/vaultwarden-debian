@@ -13,7 +13,7 @@ if [ ! -d "$SRC" ]; then
 fi
 cd "$SRC" || exit
 git fetch
-git checkout "$REF"
+git checkout "origin/$REF"
 cd - || exit
 
 # Prepare EnvFile
