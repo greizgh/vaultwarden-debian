@@ -1,14 +1,6 @@
---- git/Dockerfile	2019-03-27 09:42:06.388326974 +0100
-+++ Dockerfile	2019-03-27 10:13:47.817629003 +0100
-@@ -18,6 +18,7 @@
- RUN curl -L $URL | tar xz
- RUN ls
- 
-+
- ########################## BUILD IMAGE  ##########################
- # We need to use the Rust build image, because
- # we need the Rust compiler and Cargo tooling
-@@ -34,9 +35,9 @@
+--- git/docker/amd64/sqlite/Dockerfile	2019-07-30 21:55:16.743556891 +0200
++++ Dockerfile	2019-07-30 22:09:52.179619724 +0200
+@@ -45,9 +45,9 @@
  WORKDIR /app
  
  # Copies over *only* your manifests and build files
@@ -21,7 +13,7 @@
  
  # Builds your dependencies and removes the
  # dummy project, except the target folder
-@@ -46,7 +47,7 @@
+@@ -57,7 +57,7 @@
  
  # Copies the complete project
  # To avoid copying unneeded files, use .dockerignore
@@ -30,13 +22,7 @@
  
  # Make sure that we actually build the project
  RUN touch src/main.rs
-@@ -55,32 +56,30 @@
- # your actual source files being built
- RUN cargo build --release
- 
--######################## RUNTIME IMAGE  ########################
-+######################## PACKAGING IMAGE  ########################
- # Create a new stage with a minimal image
+@@ -71,28 +71,25 @@
  # because we already have a binary built
  FROM debian:stretch-slim
  
@@ -45,11 +31,12 @@
 -ENV ROCKET_WORKERS=10
 -
 -# Install needed libraries
--RUN apt-get update && apt-get install -y\
--    openssl\
--    ca-certificates\
--    --no-install-recommends\
-- && rm -rf /var/lib/apt/lists/*
+-RUN apt-get update && apt-get install -y \
+-    --no-install-recommends \
+-    openssl \
+-    ca-certificates \
+-    libmariadbclient-dev \
+-    && rm -rf /var/lib/apt/lists/*
 -
 -RUN mkdir /data
 -VOLUME /data
@@ -79,6 +66,6 @@
 +COPY --from=build app/target/release/bitwarden_rs /bitwarden_package/usr/local/bin
  
 -# Configures the startup!
--CMD ./bitwarden_rs
+-CMD ["./bitwarden_rs"]
 +# Create the package
 +RUN dpkg-deb --build . bitwarden-rs.deb
