@@ -1,2 +1,4 @@
 #!/bin/sh
 adduser --system --home /var/lib/bitwarden_rs bitwarden
+chmod 600 /etc/bitwarden_rs/config.env
+chmod 600 /etc/bitwarden_rs/Rocket.toml

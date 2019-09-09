@@ -16,7 +16,7 @@ Then:
 ```
 git clone https://github.com/greizgh/bitwarden_rs-debian.git
 cd bitwarden_rs-debian
-./build.sh
+./build.sh 1.10.0
 ```
 
 ## Post installation

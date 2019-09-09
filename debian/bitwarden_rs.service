@@ -6,7 +6,12 @@ After=network.target
 Type=simple
 User=bitwarden
 ExecStart=/usr/local/bin/bitwarden_rs
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
 WorkingDirectory=/etc/bitwarden_rs
+ReadWriteDirectories=/var/lib/bitwarden_rs
 EnvironmentFile=/etc/bitwarden_rs/config.env
 
 [Install]
