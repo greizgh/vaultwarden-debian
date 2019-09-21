@@ -5,15 +5,21 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SRC="$DIR/git"
 DST="$DIR/dist"
-if [ -z "$1" ]; then REF="master"; else REF="$1"; fi
+if [ -z "$1" ]; then REF="1.10.0"; else REF="$1"; fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
   git clone https://github.com/dani-garcia/bitwarden_rs.git "$SRC"
 fi
 cd "$SRC" || exit
-git fetch
-git checkout "$REF"
+CREF="$(git branch | grep \* | cut -d ' ' -f2)"
+if [ "$CREF" != "$REF" ]; then
+  git fetch
+  git checkout "$REF" --force
+else
+  git clean -d -f
+  git pull
+fi
 cd - || exit
 
 # Prepare EnvFile
@@ -25,7 +31,7 @@ sed -i "s#\# WEB_VAULT_FOLDER=web-vault/#WEB_VAULT_FOLDER=/usr/share/bitwarden_r
 mkdir -p "$DST"
 
 # Prepare Dockerfile
-patch -i "$DIR/Dockerfile.patch" "$SRC/docker/amd64/sqlite/Dockerfile" -o "$DIR/Dockerfile"
+patch -i "$DIR/Dockerfile.patch" "$SRC/docker/amd64/sqlite/Dockerfile" -o "$DIR/Dockerfile" || exit
 
 docker build -t bitwarden-deb "$DIR"
 
