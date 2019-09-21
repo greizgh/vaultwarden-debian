@@ -1,6 +1,13 @@
---- git/docker/amd64/sqlite/Dockerfile	2019-07-30 21:55:16.743556891 +0200
-+++ Dockerfile	2019-07-30 22:09:52.179619724 +0200
-@@ -45,9 +45,9 @@
+--- ./git/docker/amd64/sqlite/Dockerfile	2019-09-21 12:58:55.693071151 +0200
++++ Dockerfile	2019-09-21 12:59:48.602484797 +0200
+@@ -38,65 +38,58 @@
+ RUN apt-get update && apt-get install -y \
+     --no-install-recommends \
+     libmariadb-dev \
+     && rm -rf /var/lib/apt/lists/*
+ 
+ # Creates a dummy project used to grab dependencies
+ RUN USER=root cargo new --bin app
  WORKDIR /app
  
  # Copies over *only* your manifests and build files
@@ -13,7 +20,9 @@
  
  # Builds your dependencies and removes the
  # dummy project, except the target folder
-@@ -57,7 +57,7 @@
+ # This folder contains the compiled dependencies
+ RUN cargo build --features ${DB} --release
+ RUN find . -not -path "./target*" -delete
  
  # Copies the complete project
  # To avoid copying unneeded files, use .dockerignore
@@ -22,33 +31,38 @@
  
  # Make sure that we actually build the project
  RUN touch src/main.rs
-@@ -71,28 +71,25 @@
+ 
+ # Builds again, this time it'll just be
+ # your actual source files being built
+ RUN cargo build --features ${DB} --release
+ 
+ ######################## RUNTIME IMAGE  ########################
+ # Create a new stage with a minimal image
  # because we already have a binary built
  FROM debian:stretch-slim
  
 -ENV ROCKET_ENV "staging"
 -ENV ROCKET_PORT=80
 -ENV ROCKET_WORKERS=10
--
--# Install needed libraries
--RUN apt-get update && apt-get install -y \
--    --no-install-recommends \
--    openssl \
--    ca-certificates \
--    libmariadbclient-dev \
--    && rm -rf /var/lib/apt/lists/*
--
--RUN mkdir /data
--VOLUME /data
--EXPOSE 80
--EXPOSE 3012
 +# Create package directory
 +RUN mkdir -p /bitwarden_package/DEBIAN
 +RUN mkdir -p /bitwarden_package/usr/local/bin
 +RUN mkdir -p /bitwarden_package/usr/lib/systemd/system
 +RUN mkdir -p /bitwarden_package/etc/bitwarden_rs
 +RUN mkdir -p /bitwarden_package/usr/share/bitwarden_rs
-+
+ 
+-# Install needed libraries
+-RUN apt-get update && apt-get install -y \
+-    --no-install-recommends \
+-    openssl \
+-    ca-certificates \
+-    curl \
+-    && rm -rf /var/lib/apt/lists/*
+-
+-RUN mkdir /data
+-VOLUME /data
+-EXPOSE 80
+-EXPOSE 3012
 +WORKDIR /bitwarden_package
  
  # Copies the files from the context (Rocket.toml file and web-vault)
@@ -56,6 +70,10 @@
 -COPY Rocket.toml .
 -COPY --from=vault /web-vault ./web-vault
 -COPY --from=build app/target/release/bitwarden_rs .
+-
+-COPY docker/healthcheck.sh ./healthcheck.sh
+-
+-HEALTHCHECK --interval=30s --timeout=3s CMD sh healthcheck.sh || exit 1
 +COPY debian/control /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
