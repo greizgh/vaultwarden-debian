@@ -1,6 +1,6 @@
 --- ./git/docker/amd64/sqlite/Dockerfile	2019-09-21 12:58:55.693071151 +0200
 +++ Dockerfile	2019-09-21 12:59:48.602484797 +0200
-@@ -38,65 +38,58 @@
+@@ -38,66 +38,58 @@
  RUN apt-get update && apt-get install -y \
      --no-install-recommends \
      libmariadb-dev \
@@ -57,6 +57,7 @@
 -    openssl \
 -    ca-certificates \
 -    curl \
+-    sqlite3 \
 -    && rm -rf /var/lib/apt/lists/*
 -
 -RUN mkdir /data
