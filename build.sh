@@ -5,7 +5,19 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SRC="$DIR/git"
 DST="$DIR/dist"
-if [ -z "$1" ]; then REF="1.13.0"; else REF="$1"; fi
+
+while getopts ":r:o:" opt; do
+  case $opt in
+    r) REF="$OPTARG"
+    ;;
+    o) OS_VERSION_NAME="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    ;;
+  esac
+done
+if [ -z "$REF" ]; then REF="1.13.0"; fi
+if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME=$(lsb_release -s -c); fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
@@ -32,6 +44,8 @@ mkdir -p "$DST"
 
 # Prepare Dockerfile
 patch -i "$DIR/Dockerfile.patch" "$SRC/docker/amd64/sqlite/Dockerfile" -o "$DIR/Dockerfile" || exit
+sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
+sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
 docker build -t bitwarden-deb "$DIR"
 
