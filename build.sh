@@ -17,7 +17,7 @@ while getopts ":r:o:" opt; do
   esac
 done
 if [ -z "$REF" ]; then REF="1.13.0"; fi
-if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME=$(lsb_release -s -c); fi
+if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
@@ -50,5 +50,5 @@ sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR
 docker build -t bitwarden-deb "$DIR"
 
 CID=$(docker run -d bitwarden-deb)
-docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-$REF.deb"
+docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}.deb"
 docker rm "$CID"
