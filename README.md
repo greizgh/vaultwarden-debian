@@ -16,7 +16,14 @@ Then:
 ```
 git clone https://github.com/greizgh/bitwarden_rs-debian.git
 cd bitwarden_rs-debian
-./build.sh 1.10.0
+./build.sh -r 1.10.0
+```
+
+The `build.sh` script will build bitwarden_rs for the same Debian version which targets bitwarden_rs.
+To compile for a different Debian version, specify the release name (e.g. Stretch, Buster) using the `-o` option.
+
+```
+./build.sh -o stretch
 ```
 
 ## Post installation
