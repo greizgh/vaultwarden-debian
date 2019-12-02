@@ -5,7 +5,7 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SRC="$DIR/git"
 DST="$DIR/dist"
-if [ -z "$1" ]; then REF="1.11.0"; else REF="$1"; fi
+if [ -z "$1" ]; then REF="1.13.0"; else REF="$1"; fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
