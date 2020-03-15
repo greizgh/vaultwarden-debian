@@ -2,6 +2,6 @@ Package: bitwarden-rs
 Architecture: amd64
 Maintainer: Greizgh <greizgh+bitwardenrs@ephax.org>
 Priority: optional
-Version: 1.13.1-1
+Version: 1.14-1
 Description: Unofficial Bitwarden compatible server written in Rust
 Homepage: https://github.com/greizgh/bitwarden_rs-debian
