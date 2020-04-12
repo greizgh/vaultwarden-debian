@@ -1,5 +1,5 @@
---- ./git/docker/amd64/sqlite/Dockerfile	2019-12-01 09:42:19.862352658 -0700
-+++ Dockerfile	2019-12-01 09:46:27.471287518 -0700
+--- git/docker/amd64/sqlite/Dockerfile	2020-04-12 11:54:15.669082441 +0200
++++ Dockerfile	2020-04-12 13:30:04.212887482 +0200
 @@ -36,9 +36,9 @@
  WORKDIR /app
  
@@ -58,9 +58,9 @@
 -COPY --from=vault /web-vault ./web-vault
 -COPY --from=build app/target/release/bitwarden_rs .
 -
--COPY docker/healthcheck.sh ./healthcheck.sh
+-COPY docker/healthcheck.sh /healthcheck.sh
 -
--HEALTHCHECK --interval=30s --timeout=3s CMD sh healthcheck.sh || exit 1
+-HEALTHCHECK --interval=60s --timeout=10s CMD ["/healthcheck.sh"]
 +COPY debian/control /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles

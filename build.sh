@@ -16,7 +16,7 @@ while getopts ":r:o:" opt; do
     ;;
   esac
 done
-if [ -z "$REF" ]; then REF="1.14.1"; fi
+if [ -z "$REF" ]; then REF="1.14.2"; fi
 if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
 
 # Clone bitwarden_rs
