@@ -50,6 +50,14 @@ patch -i "$DIR/Dockerfile.patch" "$SRC/docker/amd64/$DB_TYPE/Dockerfile" -o "$DI
 sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
+# Prepare Systemd-unit
+SYSTEMD_UNIT="$DIR/debian/bitwarden_rs.service"
+if [ "$DB_TYPE" = "mysql" ]; then
+  sed -i "s/After=network.target/After=network.target mysqld.service\nRequires=mysqld.service/g" "$SYSTEMD_UNIT"
+elif [ "$DB_TYPE" = "postgresql" ]; then
+  sed -i "s/After=network.target/After=network.target postgresql.service\nRequires=postgresql.service/g" "$SYSTEMD_UNIT"
+fi
+
 docker build -t bitwarden-deb "$DIR"
 
 CID=$(docker run -d bitwarden-deb)
