@@ -53,5 +53,5 @@ sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR
 docker build -t bitwarden-deb "$DIR"
 
 CID=$(docker run -d bitwarden-deb)
-docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}.deb"
+docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}.deb"
 docker rm "$CID"
