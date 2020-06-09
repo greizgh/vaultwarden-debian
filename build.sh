@@ -18,7 +18,7 @@ while getopts ":r:o:d:" opt; do
     ;;
   esac
 done
-if [ -z "$REF" ]; then REF="1.15.0"; fi
+if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/bitwarden_rs/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
 if [ -z "$DB_TYPE" ]; then DB_TYPE="sqlite"; fi
 
