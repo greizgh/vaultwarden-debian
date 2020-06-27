@@ -10,6 +10,7 @@ Make sure you have the required build dependencies:
 * docker
 * git
 * patch
+* curl
 
 Then:
 
