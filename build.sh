@@ -54,6 +54,7 @@ sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR
 
 # Prepare Controlfile
 CONTROL="$DIR/debian/control"
+cp "$DIR/control.dist" "$CONTROL"
 sed -i "s/Version:.*/Version: $REF-1/" "$CONTROL"
 
 # Prepare Systemd-unit
