@@ -52,6 +52,11 @@ patch -i "$DIR/Dockerfile.patch" "$SRC/docker/amd64/$DB_TYPE/Dockerfile" -o "$DI
 sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
+# Prepare Controlfile
+CONTROL="$DIR/debian/control"
+cp "$DIR/control.dist" "$CONTROL"
+sed -i "s/Version:.*/Version: $REF-1/" "$CONTROL"
+
 # Prepare Systemd-unit
 SYSTEMD_UNIT="$DIR/debian/bitwarden_rs.service"
 if [ "$DB_TYPE" = "mysql" ]; then

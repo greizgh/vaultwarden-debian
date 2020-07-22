@@ -1,4 +1,5 @@
 git/
 dist/
 debian/config.env
+debian/control
 Dockerfile
