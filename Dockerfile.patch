@@ -1,5 +1,5 @@
---- git/docker/amd64/sqlite/Dockerfile	2020-04-12 11:54:15.669082441 +0200
-+++ Dockerfile	2020-04-12 13:30:04.212887482 +0200
+--- git/docker/amd64/sqlite/Dockerfile	2020-07-22 18:23:44.754032681 +0200
++++ Dockerfile	2020-07-22 18:29:57.149135164 +0200
 @@ -36,9 +36,9 @@
  WORKDIR /app
  
@@ -33,7 +33,7 @@
  # Install needed libraries
  RUN apt-get update && apt-get install -y \
      --no-install-recommends \
-@@ -75,21 +71,25 @@
+@@ -75,22 +71,25 @@
      sqlite3 \
      && rm -rf /var/lib/apt/lists/*
  
@@ -57,8 +57,13 @@
 -COPY --from=build app/target/release/bitwarden_rs .
 -
 -COPY docker/healthcheck.sh /healthcheck.sh
+-COPY docker/start.sh /start.sh
 -
 -HEALTHCHECK --interval=60s --timeout=10s CMD ["/healthcheck.sh"]
+-
+-# Configures the startup!
+-WORKDIR /
+-CMD ["/start.sh"]
 +COPY debian/control /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
@@ -67,9 +72,6 @@
 +COPY debian/bitwarden_rs.service /bitwarden_package/usr/lib/systemd/system
 +COPY --from=vault /web-vault /bitwarden_package/usr/share/bitwarden_rs/web-vault
 +COPY --from=build app/target/release/bitwarden_rs /bitwarden_package/usr/local/bin
- 
--# Configures the startup!
--WORKDIR /
--CMD ["/bitwarden_rs"]
++
 +# Create the package
 +RUN dpkg-deb --build . bitwarden-rs.deb
