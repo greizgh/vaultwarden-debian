@@ -1,6 +1,13 @@
---- git/docker/amd64/sqlite/Dockerfile	2020-07-22 18:23:44.754032681 +0200
-+++ Dockerfile	2020-07-22 18:29:57.149135164 +0200
-@@ -36,9 +36,9 @@
+--- ./git/docker/amd64/Dockerfile	2020-10-11 13:07:49.749465588 +0200
++++ ./Dockerfile	2020-10-11 14:00:43.341362012 +0200
+@@ -34,72 +34,68 @@
+     --no-install-recommends \
+     libmariadb-dev \
+     libpq-dev \
+     && rm -rf /var/lib/apt/lists/*
+ 
+ # Creates a dummy project used to grab dependencies
+ RUN USER=root cargo new --bin /app
  WORKDIR /app
  
  # Copies over *only* your manifests and build files
@@ -11,9 +18,12 @@
 +COPY git/rust-toolchain ./rust-toolchain
 +COPY git/build.rs ./build.rs
  
+ 
  # Builds your dependencies and removes the
  # dummy project, except the target folder
-@@ -48,7 +48,7 @@
+ # This folder contains the compiled dependencies
+ RUN cargo build --features ${DB} --release
+ RUN find . -not -path "./target*" -delete
  
  # Copies the complete project
  # To avoid copying unneeded files, use .dockerignore
@@ -22,7 +32,13 @@
  
  # Make sure that we actually build the project
  RUN touch src/main.rs
-@@ -62,10 +62,6 @@
+ 
+ # Builds again, this time it'll just be
+ # your actual source files being built
+ RUN cargo build --features ${DB} --release
+ 
+ ######################## RUNTIME IMAGE  ########################
+ # Create a new stage with a minimal image
  # because we already have a binary built
  FROM debian:buster-slim
  
@@ -33,25 +49,21 @@
  # Install needed libraries
  RUN apt-get update && apt-get install -y \
      --no-install-recommends \
-@@ -75,22 +71,25 @@
+     openssl \
+     ca-certificates \
+     curl \
      sqlite3 \
+     libmariadb-dev-compat \
+     libpq5 \
      && rm -rf /var/lib/apt/lists/*
  
 -RUN mkdir /data
 -VOLUME /data
 -EXPOSE 80
 -EXPOSE 3012
-+# Create package directory
-+RUN mkdir -p /bitwarden_package/DEBIAN
-+RUN mkdir -p /bitwarden_package/usr/local/bin
-+RUN mkdir -p /bitwarden_package/usr/lib/systemd/system
-+RUN mkdir -p /bitwarden_package/etc/bitwarden_rs
-+RUN mkdir -p /bitwarden_package/usr/share/bitwarden_rs
-+
-+WORKDIR /bitwarden_package
- 
- # Copies the files from the context (Rocket.toml file and web-vault)
- # and the binary from the "build" stage to the current stage
+-
+-# Copies the files from the context (Rocket.toml file and web-vault)
+-# and the binary from the "build" stage to the current stage
 -COPY Rocket.toml .
 -COPY --from=vault /web-vault ./web-vault
 -COPY --from=build app/target/release/bitwarden_rs .
@@ -64,6 +76,15 @@
 -# Configures the startup!
 -WORKDIR /
 -CMD ["/start.sh"]
++# Create package directory
++RUN mkdir -p /bitwarden_package/DEBIAN
++RUN mkdir -p /bitwarden_package/usr/local/bin
++RUN mkdir -p /bitwarden_package/usr/lib/systemd/system
++RUN mkdir -p /bitwarden_package/etc/bitwarden_rs
++RUN mkdir -p /bitwarden_package/usr/share/bitwarden_rs
++
++WORKDIR /bitwarden_package
++
 +COPY debian/control /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
@@ -72,6 +93,6 @@
 +COPY debian/bitwarden_rs.service /bitwarden_package/usr/lib/systemd/system
 +COPY --from=vault /web-vault /bitwarden_package/usr/share/bitwarden_rs/web-vault
 +COPY --from=build app/target/release/bitwarden_rs /bitwarden_package/usr/local/bin
-+
+ 
 +# Create the package
 +RUN dpkg-deb --build . bitwarden-rs.deb
