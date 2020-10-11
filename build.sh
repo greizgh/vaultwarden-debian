@@ -44,7 +44,6 @@ sed -i "s#\# DATA_FOLDER=data#DATA_FOLDER=/var/lib/bitwarden_rs#" "$CONFIG"
 sed -i "s#\# WEB_VAULT_FOLDER=web-vault/#WEB_VAULT_FOLDER=/usr/share/bitwarden_rs/web-vault/#" "$CONFIG"
 sed -i "s/Uncomment any of the following lines to change the defaults/Uncomment any of the following lines to change the defaults\n\n## Warning\n## The default systemd-unit does not allow any custom directories.\n## Be sure to check if the service has appropriate permissions before you set custom paths./g" "$CONFIG"
 
-
 mkdir -p "$DST"
 
 # Prepare Dockerfile
@@ -65,7 +64,8 @@ elif [ "$DB_TYPE" = "postgresql" ]; then
   sed -i "s/After=network.target/After=network.target postgresql.service\nRequires=postgresql.service/g" "$SYSTEMD_UNIT"
 fi
 
-docker build -t bitwarden-deb "$DIR"
+echo "[INFO] docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE"
+docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE
 
 CID=$(docker run -d bitwarden-deb)
 docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}.deb"
