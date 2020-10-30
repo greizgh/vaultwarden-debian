@@ -47,7 +47,7 @@ sed -i "s/Uncomment any of the following lines to change the defaults/Uncomment 
 mkdir -p "$DST"
 
 # Prepare Dockerfile
-patch -i "$DIR/Dockerfile.patch" "$SRC/docker/amd64/Dockerfile" --verbose -o "$DIR/Dockerfile" || exit
+patch -i "$DIR/patch/amd64/Dockerfile.patch" "$SRC/docker/amd64/Dockerfile" --verbose -o "$DIR/Dockerfile" || exit
 sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
