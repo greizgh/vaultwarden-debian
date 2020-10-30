@@ -6,13 +6,15 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SRC="$DIR/git"
 DST="$DIR/dist"
 
-while getopts ":r:o:d:" opt; do
+while getopts ":r:o:d:a:" opt; do
   case $opt in
     r) REF="$OPTARG"
     ;;
     o) OS_VERSION_NAME="$OPTARG"
     ;;
     d) DB_TYPE="$OPTARG"
+    ;;
+    a) ARCH="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
@@ -21,6 +23,7 @@ done
 if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/bitwarden_rs/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
 if [ -z "$DB_TYPE" ]; then DB_TYPE="sqlite"; fi
+if [ -z "$ARCH" ]; then ARCH="amd64"; fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
@@ -47,7 +50,7 @@ sed -i "s/Uncomment any of the following lines to change the defaults/Uncomment 
 mkdir -p "$DST"
 
 # Prepare Dockerfile
-patch -i "$DIR/patch/amd64/Dockerfile.patch" "$SRC/docker/amd64/Dockerfile" --verbose -o "$DIR/Dockerfile" || exit
+patch -i "$DIR/patch/$ARCH/Dockerfile.patch" "$SRC/docker/$ARCH/Dockerfile" --verbose -o "$DIR/Dockerfile" || exit
 sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
@@ -68,5 +71,5 @@ echo "[INFO] docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE"
 docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE
 
 CID=$(docker run -d bitwarden-deb)
-docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}.deb"
+docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH}.deb"
 docker rm "$CID"
