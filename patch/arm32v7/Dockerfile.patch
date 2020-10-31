@@ -1,5 +1,5 @@
---- git/docker/arm32v7/Dockerfile	2020-10-30 23:53:19.466368204 +0100
-+++ ./Dockerfile	2020-10-31 00:17:43.098035016 +0100
+--- git/docker/arm32v7/Dockerfile	2020-10-31 02:08:03.882836500 +0100
++++ Dockerfile	2020-10-31 02:15:24.179514054 +0100
 @@ -61,9 +61,9 @@
  WORKDIR /app
  
@@ -77,7 +77,7 @@
 +
 +WORKDIR /bitwarden_package
 +
-+COPY debian/control /bitwarden_package/DEBIAN/control
++COPY debian/control-armhf /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
 +COPY git/Rocket.toml /bitwarden_package/etc/bitwarden_rs
