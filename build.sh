@@ -14,7 +14,7 @@ while getopts ":r:o:d:a:" opt; do
     ;;
     d) DB_TYPE="$OPTARG"
     ;;
-    a) ARCH="$OPTARG"
+    a) ARCH_DIR="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
@@ -23,7 +23,9 @@ done
 if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/bitwarden_rs/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
 if [ -z "$DB_TYPE" ]; then DB_TYPE="sqlite"; fi
-if [ -z "$ARCH" ]; then ARCH="amd64"; fi
+if [ -z "$ARCH_DIR" ]; then ARCH_DIR="amd64"; fi
+ARCH=$ARCH_DIR
+if [[ "$ARCH" =~ ^arm ]]; then ARCH="armhf"; fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
@@ -50,7 +52,7 @@ sed -i "s/Uncomment any of the following lines to change the defaults/Uncomment 
 mkdir -p "$DST"
 
 # Prepare Dockerfile
-patch -i "$DIR/patch/$ARCH/Dockerfile.patch" "$SRC/docker/$ARCH/Dockerfile" --verbose -o "$DIR/Dockerfile" || exit
+patch -i "$DIR/patch/$ARCH_DIR/Dockerfile.patch" "$SRC/docker/$ARCH_DIR/Dockerfile" --verbose -o "$DIR/Dockerfile" || exit
 sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
@@ -58,6 +60,7 @@ sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR
 CONTROL="$DIR/debian/control"
 cp "$DIR/control.dist" "$CONTROL"
 sed -i "s/Version:.*/Version: $REF-1/" "$CONTROL"
+sed -i "s/Architecture:.*/Architecture: $ARCH/" "$CONTROL"
 
 # Prepare Systemd-unit
 SYSTEMD_UNIT="$DIR/debian/bitwarden_rs.service"
@@ -71,5 +74,5 @@ echo "[INFO] docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE"
 docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE
 
 CID=$(docker run -d bitwarden-deb)
-docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH}.deb"
+docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"
 docker rm "$CID"

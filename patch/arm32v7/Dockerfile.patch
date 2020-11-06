@@ -1,5 +1,5 @@
---- ./git/docker/arm32v7/Dockerfile	2020-10-31 02:17:17.940771943 +0100
-+++ ./Dockerfile	2020-10-31 13:06:52.171380878 +0100
+--- ./git/docker/arm32v7/Dockerfile	2020-10-31 15:04:00.786589801 +0100
++++ ./Dockerfile	2020-11-06 17:44:35.204501362 +0100
 @@ -54,23 +54,23 @@
      && echo 'rustflags = ["-L/usr/lib/arm-linux-gnueabihf"]' >> ~/.cargo/config
  
@@ -102,7 +102,7 @@
 +
 +WORKDIR /bitwarden_package
 +
-+COPY debian/control-armhf /bitwarden_package/DEBIAN/control
++COPY debian/control /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
 +COPY git/Rocket.toml /bitwarden_package/etc/bitwarden_rs

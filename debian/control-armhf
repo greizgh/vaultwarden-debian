@@ -1,7 +1,0 @@
-Package: bitwarden-rs
-Architecture: armhf
-Maintainer: Greizgh <greizgh+bitwardenrs@ephax.org>
-Priority: optional
-Version: 1.17.0-1
-Description: Unofficial Bitwarden compatible server written in Rust
-Homepage: https://github.com/greizgh/bitwarden_rs-debian

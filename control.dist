@@ -1,5 +1,5 @@
 Package: bitwarden-rs
-Architecture: amd64
+Architecture: -
 Maintainer: Greizgh <greizgh+bitwardenrs@ephax.org>
 Priority: optional
 Version: -
