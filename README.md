@@ -34,3 +34,23 @@ The packaged systemd unit is **disabled**, you need to configure bitwarden_rs th
 `/etc/bitwarden_rs/config.env`
 
 You will also probably want to setup a reverse proxy.
+
+
+## License
+
+    Bitwarden_rs-debian is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Bitwarden_rs-debian is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+
+See [COPYING](./COPYING) for the full license.
+
+Please note this does not assume anything about [bitwarden_rs](https://github.com/dani-garcia/bitwarden_rs)'s own license.
