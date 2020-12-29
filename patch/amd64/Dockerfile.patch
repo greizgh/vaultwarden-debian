@@ -1,13 +1,6 @@
---- ./git/docker/amd64/Dockerfile	2020-10-11 13:07:49.749465588 +0200
-+++ ./Dockerfile	2020-10-11 14:00:43.341362012 +0200
-@@ -34,72 +34,68 @@
-     --no-install-recommends \
-     libmariadb-dev \
-     libpq-dev \
-     && rm -rf /var/lib/apt/lists/*
- 
- # Creates a dummy project used to grab dependencies
- RUN USER=root cargo new --bin /app
+--- git/docker/amd64/Dockerfile	2020-12-29 21:18:53.687097820 +0100
++++ Dockerfile	2020-12-29 21:50:52.627961467 +0100
+@@ -41,9 +41,9 @@
  WORKDIR /app
  
  # Copies over *only* your manifests and build files
@@ -20,10 +13,7 @@
  
  
  # Builds your dependencies and removes the
- # dummy project, except the target folder
- # This folder contains the compiled dependencies
- RUN cargo build --features ${DB} --release
- RUN find . -not -path "./target*" -delete
+@@ -54,7 +54,7 @@
  
  # Copies the complete project
  # To avoid copying unneeded files, use .dockerignore
@@ -32,13 +22,7 @@
  
  # Make sure that we actually build the project
  RUN touch src/main.rs
- 
- # Builds again, this time it'll just be
- # your actual source files being built
- RUN cargo build --features ${DB} --release
- 
- ######################## RUNTIME IMAGE  ########################
- # Create a new stage with a minimal image
+@@ -68,38 +68,22 @@
  # because we already have a binary built
  FROM debian:buster-slim
  
@@ -46,17 +30,17 @@
 -ENV ROCKET_PORT=80
 -ENV ROCKET_WORKERS=10
 -
- # Install needed libraries
- RUN apt-get update && apt-get install -y \
-     --no-install-recommends \
-     openssl \
-     ca-certificates \
-     curl \
-     sqlite3 \
-     libmariadb-dev-compat \
-     libpq5 \
-     && rm -rf /var/lib/apt/lists/*
- 
+-# Install needed libraries
+-RUN apt-get update && apt-get install -y \
+-    --no-install-recommends \
+-    openssl \
+-    ca-certificates \
+-    curl \
+-    sqlite3 \
+-    libmariadb-dev-compat \
+-    libpq5 \
+-    && rm -rf /var/lib/apt/lists/*
+-
 -RUN mkdir /data
 -VOLUME /data
 -EXPOSE 80
@@ -66,25 +50,22 @@
 -# and the binary from the "build" stage to the current stage
 -COPY Rocket.toml .
 -COPY --from=vault /web-vault ./web-vault
--COPY --from=build app/target/release/bitwarden_rs .
+-COPY --from=build /app/target/release/bitwarden_rs .
 -
 -COPY docker/healthcheck.sh /healthcheck.sh
 -COPY docker/start.sh /start.sh
--
--HEALTHCHECK --interval=60s --timeout=10s CMD ["/healthcheck.sh"]
--
--# Configures the startup!
--WORKDIR /
--CMD ["/start.sh"]
-+# Create package directory
 +RUN mkdir -p /bitwarden_package/DEBIAN
 +RUN mkdir -p /bitwarden_package/usr/local/bin
 +RUN mkdir -p /bitwarden_package/usr/lib/systemd/system
 +RUN mkdir -p /bitwarden_package/etc/bitwarden_rs
 +RUN mkdir -p /bitwarden_package/usr/share/bitwarden_rs
-+
+ 
+-HEALTHCHECK --interval=60s --timeout=10s CMD ["/healthcheck.sh"]
 +WORKDIR /bitwarden_package
-+
+ 
+-# Configures the startup!
+-WORKDIR /
+-CMD ["/start.sh"]
 +COPY debian/control /bitwarden_package/DEBIAN/control
 +COPY debian/postinst /bitwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
