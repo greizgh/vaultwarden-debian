@@ -71,7 +71,9 @@ elif [ "$DB_TYPE" = "postgresql" ]; then
 fi
 
 echo "[INFO] docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE"
-docker build -t bitwarden-deb "$DIR" --build-arg DB=$DB_TYPE
+cp -r "$DIR/debian" "$SRC/debian"
+docker build -t bitwarden-deb "$SRC" --build-arg DB=$DB_TYPE --target dpkg -f "$DIR/Dockerfile"
+pushd "$SRC"; git clean -fd; popd
 
 CID=$(docker run -d bitwarden-deb)
 docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"

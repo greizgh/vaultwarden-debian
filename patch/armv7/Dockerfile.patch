@@ -1,6 +1,6 @@
---- git/docker/amd64/Dockerfile	2021-02-12 11:45:13.762372371 +0100
-+++ Dockerfile	2021-02-12 11:59:56.727518522 +0100
-@@ -111,3 +111,23 @@
+--- git/docker/armv7/Dockerfile	2021-02-12 11:45:13.763372371 +0100
++++ Dockerfile	2021-02-12 12:25:50.078877369 +0100
+@@ -157,3 +157,23 @@
  WORKDIR /
  ENTRYPOINT ["/usr/bin/dumb-init", "--"]
  CMD ["/start.sh"]
@@ -21,6 +21,6 @@
 +COPY debian/config.env /bitwarden_package/etc/bitwarden_rs
 +COPY debian/bitwarden_rs.service /bitwarden_package/usr/lib/systemd/system
 +COPY --from=vault /web-vault /bitwarden_package/usr/share/bitwarden_rs/web-vault
-+COPY --from=build app/target/release/bitwarden_rs /bitwarden_package/usr/local/bin
++COPY --from=build app/target/armv7-unknown-linux-gnueabihf/release/bitwarden_rs /bitwarden_package/usr/local/bin
 +
 +RUN dpkg-deb --build . bitwarden-rs.deb
