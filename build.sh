@@ -64,6 +64,7 @@ sed -i "s/Architecture:.*/Architecture: $ARCH/" "$CONTROL"
 
 # Prepare Systemd-unit
 SYSTEMD_UNIT="$DIR/debian/bitwarden_rs.service"
+cp "$DIR/service.dist" "$SYSTEMD_UNIT"
 if [ "$DB_TYPE" = "mysql" ]; then
   sed -i "s/After=network.target/After=network.target mysqld.service\nRequires=mysqld.service/g" "$SYSTEMD_UNIT"
 elif [ "$DB_TYPE" = "postgresql" ]; then

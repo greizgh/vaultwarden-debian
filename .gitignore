@@ -2,4 +2,5 @@ git/
 dist/
 debian/config.env
 debian/control
+debian/bitwarden_rs.service
 Dockerfile
