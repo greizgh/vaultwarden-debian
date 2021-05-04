@@ -1,7 +1,7 @@
 Package: vaultwarden
 Architecture: -
-Maintainer: Greizgh <greizgh+bitwardenrs@ephax.org>
+Maintainer: Greizgh <greizgh+vaultwarden@ephax.org>
 Priority: optional
 Version: -
 Description: Unofficial Bitwarden compatible server written in Rust
-Homepage: https://github.com/greizgh/bitwarden_rs-debian
+Homepage: https://github.com/greizgh/vaultwarden-debian

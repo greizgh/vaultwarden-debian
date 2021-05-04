@@ -15,8 +15,8 @@ Make sure you have the required build dependencies:
 Then:
 
 ```
-git clone https://github.com/greizgh/bitwarden_rs-debian.git
-cd bitwarden_rs-debian
+git clone https://github.com/greizgh/vaultwarden-debian.git
+cd vaultwarden-debian
 ./build.sh -r <version> # target vaultwarden version, example 1.19.0
 ```
 
@@ -40,7 +40,7 @@ You will also probably want to setup a reverse proxy.
 
 ## License
 
-    Bitwarden_rs-debian is free software: you can redistribute it and/or modify
+    vaultwarden-debian is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
