@@ -1,5 +1,5 @@
 #!/bin/sh
-DIR_MODE=0700 adduser --system --home /var/lib/bitwarden_rs bitwarden
-chmod 700 /var/lib/bitwarden_rs
-chmod 600 /etc/bitwarden_rs/config.env
-chmod 600 /etc/bitwarden_rs/Rocket.toml
+DIR_MODE=0700 adduser --system --home /var/lib/vaultwarden vaultwarden
+chmod 700 /var/lib/vaultwarden
+chmod 600 /etc/vaultwarden/config.env
+chmod 600 /etc/vaultwarden/Rocket.toml

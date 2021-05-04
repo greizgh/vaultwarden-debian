@@ -7,20 +7,20 @@
 +
 +####################### dpkg target ##########################
 +FROM build as dpkg
-+RUN mkdir -p /bitwarden_package/DEBIAN
-+RUN mkdir -p /bitwarden_package/usr/local/bin
-+RUN mkdir -p /bitwarden_package/usr/lib/systemd/system
-+RUN mkdir -p /bitwarden_package/etc/bitwarden_rs
-+RUN mkdir -p /bitwarden_package/usr/share/bitwarden_rs
++RUN mkdir -p /vaultwarden_package/DEBIAN
++RUN mkdir -p /vaultwarden_package/usr/local/bin
++RUN mkdir -p /vaultwarden_package/usr/lib/systemd/system
++RUN mkdir -p /vaultwarden_package/etc/vaultwarden
++RUN mkdir -p /vaultwarden_package/usr/share/vaultwarden
 +
-+WORKDIR /bitwarden_package
-+COPY debian/control /bitwarden_package/DEBIAN/control
-+COPY debian/postinst /bitwarden_package/DEBIAN/postinst
-+COPY debian/conffiles /bitwarden_package/DEBIAN/conffiles
-+COPY Rocket.toml /bitwarden_package/etc/bitwarden_rs
-+COPY debian/config.env /bitwarden_package/etc/bitwarden_rs
-+COPY debian/bitwarden_rs.service /bitwarden_package/usr/lib/systemd/system
-+COPY --from=vault /web-vault /bitwarden_package/usr/share/bitwarden_rs/web-vault
-+COPY --from=build app/target/release/vaultwarden /bitwarden_package/usr/local/bin
++WORKDIR /vaultwarden_package
++COPY debian/control /vaultwarden_package/DEBIAN/control
++COPY debian/postinst /vaultwarden_package/DEBIAN/postinst
++COPY debian/conffiles /vaultwarden_package/DEBIAN/conffiles
++COPY Rocket.toml /vaultwarden_package/etc/vaultwarden
++COPY debian/config.env /vaultwarden_package/etc/vaultwarden
++COPY debian/vaultwarden.service /vaultwarden_package/usr/lib/systemd/system
++COPY --from=vault /web-vault /vaultwarden_package/usr/share/vaultwarden/web-vault
++COPY --from=build app/target/release/vaultwarden /vaultwarden_package/usr/local/bin
 +
 +RUN dpkg-deb --build . vaultwarden.deb

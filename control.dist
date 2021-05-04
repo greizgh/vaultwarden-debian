@@ -1,4 +1,4 @@
-Package: bitwarden-rs
+Package: vaultwarden
 Architecture: -
 Maintainer: Greizgh <greizgh+bitwardenrs@ephax.org>
 Priority: optional

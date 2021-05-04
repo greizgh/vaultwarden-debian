@@ -17,10 +17,10 @@ Then:
 ```
 git clone https://github.com/greizgh/bitwarden_rs-debian.git
 cd bitwarden_rs-debian
-./build.sh -r <version> # target bitwarden_rs version, example 1.19.0
+./build.sh -r <version> # target vaultwarden version, example 1.19.0
 ```
 
-The `build.sh` script will build bitwarden_rs for the same Debian version which targets vaultwarden.
+The `build.sh` script will build vaultwarden for the same Debian version which targets vaultwarden.
 That means, to build vaultwarden v1.19.0, make sure to checkout tag `v1.19.0` of this project.
 
 To compile for a different Debian version, specify the release name (e.g. Stretch, Buster) using the `-o` option. You can compile for arm32v7 or amd64 architecture using the `-a` option, only the Buster (default) release of debian is supported by arm32v7.
@@ -33,7 +33,7 @@ To compile for a different Debian version, specify the release name (e.g. Stretc
 
 The packaged systemd unit is **disabled**, you need to configure vaultwarden through its
 [EnvFile](https://www.freedesktop.org/software/systemd/man/systemd.service.html#Command%20lines):
-`/etc/bitwarden_rs/config.env`
+`/etc/vaultwarden/config.env`
 
 You will also probably want to setup a reverse proxy.
 
