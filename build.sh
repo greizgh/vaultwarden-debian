@@ -20,7 +20,7 @@ while getopts ":r:o:d:a:" opt; do
     ;;
   esac
 done
-if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/bitwarden_rs/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
+if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
 if [ -z "$DB_TYPE" ]; then DB_TYPE="sqlite"; fi
 if [ -z "$ARCH_DIR" ]; then ARCH_DIR="amd64"; fi
@@ -29,7 +29,7 @@ if [[ "$ARCH" =~ ^arm ]]; then ARCH="armhf"; fi
 
 # Clone bitwarden_rs
 if [ ! -d "$SRC" ]; then
-  git clone https://github.com/dani-garcia/bitwarden_rs.git "$SRC"
+  git clone https://github.com/dani-garcia/vaultwarden.git "$SRC"
 fi
 cd "$SRC" || exit
 CREF="$(git branch | grep \* | cut -d ' ' -f2)"
@@ -77,5 +77,5 @@ docker build -t bitwarden-deb "$SRC" --build-arg DB=$DB_TYPE --target dpkg -f "$
 pushd "$SRC"; git clean -fd; popd
 
 CID=$(docker run -d bitwarden-deb)
-docker cp "$CID":/bitwarden_package/bitwarden-rs.deb "$DST/bitwarden_rs-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"
+docker cp "$CID":/bitwarden_package/vaultwarden.deb "$DST/vaultwarden-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"
 docker rm "$CID"

@@ -21,6 +21,6 @@
 +COPY debian/config.env /bitwarden_package/etc/bitwarden_rs
 +COPY debian/bitwarden_rs.service /bitwarden_package/usr/lib/systemd/system
 +COPY --from=vault /web-vault /bitwarden_package/usr/share/bitwarden_rs/web-vault
-+COPY --from=build app/target/release/bitwarden_rs /bitwarden_package/usr/local/bin
++COPY --from=build app/target/release/vaultwarden /bitwarden_package/usr/local/bin
 +
-+RUN dpkg-deb --build . bitwarden-rs.deb
++RUN dpkg-deb --build . vaultwarden.deb

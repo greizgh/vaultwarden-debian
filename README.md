@@ -1,6 +1,6 @@
-# Bitwarden_rs debian package helper
+# vaultwarden debian package helper
 
-[Bitwarden_rs](https://github.com/dani-garcia/bitwarden_rs) is an "Unofficial Bitwarden compatible server written in Rust".
+[vaultwarden](https://github.com/dani-garcia/vaultwarden) is an "Unofficial Bitwarden compatible server written in Rust".
 
 This repository will help you produce a debian package.
 
@@ -20,8 +20,8 @@ cd bitwarden_rs-debian
 ./build.sh -r <version> # target bitwarden_rs version, example 1.19.0
 ```
 
-The `build.sh` script will build bitwarden_rs for the same Debian version which targets bitwarden_rs.
-That means, to build bitwarden_rs v1.19.0, make sure to checkout tag `v1.19.0` of this project.
+The `build.sh` script will build bitwarden_rs for the same Debian version which targets vaultwarden.
+That means, to build vaultwarden v1.19.0, make sure to checkout tag `v1.19.0` of this project.
 
 To compile for a different Debian version, specify the release name (e.g. Stretch, Buster) using the `-o` option. You can compile for arm32v7 or amd64 architecture using the `-a` option, only the Buster (default) release of debian is supported by arm32v7.
 
@@ -31,7 +31,7 @@ To compile for a different Debian version, specify the release name (e.g. Stretc
 
 ## Post installation
 
-The packaged systemd unit is **disabled**, you need to configure bitwarden_rs through its
+The packaged systemd unit is **disabled**, you need to configure vaultwarden through its
 [EnvFile](https://www.freedesktop.org/software/systemd/man/systemd.service.html#Command%20lines):
 `/etc/bitwarden_rs/config.env`
 
@@ -55,4 +55,4 @@ You will also probably want to setup a reverse proxy.
 
 See [COPYING](./COPYING) for the full license.
 
-Please note this does not assume anything about [bitwarden_rs](https://github.com/dani-garcia/bitwarden_rs)'s own license.
+Please note this does not assume anything about [vaultwarden](https://github.com/dani-garcia/vaultwarden)'s own license.
