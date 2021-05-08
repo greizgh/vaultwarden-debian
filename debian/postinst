@@ -1,5 +1,0 @@
-#!/bin/sh
-DIR_MODE=0700 adduser --system --home /var/lib/vaultwarden vaultwarden
-chmod 700 /var/lib/vaultwarden
-chmod 600 /etc/vaultwarden/config.env
-chmod 600 /etc/vaultwarden/Rocket.toml

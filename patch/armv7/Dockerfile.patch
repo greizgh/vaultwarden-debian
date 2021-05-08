@@ -10,17 +10,17 @@
 +RUN mkdir -p /vaultwarden_package/DEBIAN
 +RUN mkdir -p /vaultwarden_package/usr/local/bin
 +RUN mkdir -p /vaultwarden_package/usr/lib/systemd/system
-+RUN mkdir -p /vaultwarden_package/etc/vaultwarden
-+RUN mkdir -p /vaultwarden_package/usr/share/vaultwarden
++RUN mkdir -p /vaultwarden_package/etc/@@PACKAGEDIR@@
++RUN mkdir -p /vaultwarden_package/usr/share/@@PACKAGEDIR@@
 +
 +WORKDIR /vaultwarden_package
 +COPY debian/control /vaultwarden_package/DEBIAN/control
 +COPY debian/postinst /vaultwarden_package/DEBIAN/postinst
 +COPY debian/conffiles /vaultwarden_package/DEBIAN/conffiles
-+COPY Rocket.toml /vaultwarden_package/etc/vaultwarden
-+COPY debian/config.env /vaultwarden_package/etc/vaultwarden
-+COPY debian/vaultwarden.service /vaultwarden_package/usr/lib/systemd/system
-+COPY --from=vault /web-vault /vaultwarden_package/usr/share/vaultwarden/web-vault
-+COPY --from=build app/target/armv7-unknown-linux-gnueabihf/release/vaultwarden /vaultwarden_package/usr/local/bin
++COPY Rocket.toml /vaultwarden_package/etc/@@PACKAGEDIR@@
++COPY debian/config.env /vaultwarden_package/etc/@@PACKAGEDIR@@
++COPY debian/@@EXECUTABLENAME@@.service /vaultwarden_package/usr/lib/systemd/system
++COPY --from=vault /web-vault /vaultwarden_package/usr/share/@@PACKAGEDIR@@/web-vault
++COPY --from=build app/target/armv7-unknown-linux-gnueabihf/release/vaultwarden /vaultwarden_package/usr/local/bin/@@EXECUTABLENAME@@
 +
-+RUN dpkg-deb --build . vaultwarden.deb
++RUN dpkg-deb --build . @@PACKAGEDIR@@.deb
