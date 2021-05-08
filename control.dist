@@ -1,4 +1,4 @@
-Package: vaultwarden
+Package: @@PACKAGENAME@@
 Architecture: -
 Maintainer: Greizgh <greizgh+vaultwarden@ephax.org>
 Priority: optional
