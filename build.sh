@@ -45,7 +45,7 @@ if [ ! -d "$SRC" ]; then
   git clone https://github.com/dani-garcia/vaultwarden.git "$SRC"
 fi
 pushd "$SRC" || exit
-CREF="$(git branch | grep \* | cut -d ' ' -f2)"
+CREF="$(git branch | grep "\*" | cut -d ' ' -f2)"
 if [ "$CREF" != "$REF" ]; then
   git fetch || exit
   git checkout "$REF" --force || exit
@@ -73,12 +73,12 @@ sed -i "s#\# WEB_VAULT_FOLDER=web-vault/#WEB_VAULT_FOLDER=/usr/share/$PACKAGEDIR
 sed -i "s/Uncomment any of the following lines to change the defaults/Uncomment any of the following lines to change the defaults\n\n## Warning\n## The default systemd-unit does not allow any custom directories.\n## Be sure to check if the service has appropriate permissions before you set custom paths./g" "$CONFIG"
 
 # Prepare conffiles
-sed conffiles.dist > $DEBIANDIR/conffiles -f <( echo "$SEDCOMMANDS" ) || exit
-chmod 644 $DEBIANDIR/conffiles
+sed conffiles.dist > "$DEBIANDIR/conffiles" -f <( echo "$SEDCOMMANDS" ) || exit
+chmod 644 "$DEBIANDIR/conffiles"
 
 # Prepare postinst
-sed postinst.dist > $DEBIANDIR/postinst -f <( echo "$SEDCOMMANDS" ) || exit
-chmod 755 $DEBIANDIR/postinst
+sed postinst.dist > "$DEBIANDIR/postinst" -f <( echo "$SEDCOMMANDS" ) || exit
+chmod 755 "$DEBIANDIR/postinst"
 
 mkdir -p "$DST"
 
@@ -106,8 +106,8 @@ elif [ "$DB_TYPE" = "postgresql" ]; then
   sed -i "s/After=network.target/After=network.target postgresql.service\nRequires=postgresql.service/g" "$SYSTEMD_UNIT"
 fi
 
-echo "[INFO] docker build -t vaultwarden-deb "$DIR" --build-arg DB=$DB_TYPE"
-docker build -t vaultwarden-deb "$SRC" --build-arg DB=$DB_TYPE --target dpkg -f "$DIR/Dockerfile"
+echo "[INFO] docker build -t vaultwarden-deb $DIR --build-arg DB=$DB_TYPE"
+docker build -t vaultwarden-deb "$SRC" --build-arg DB="$DB_TYPE" --target dpkg -f "$DIR/Dockerfile"
 
 CID=$(docker run -d vaultwarden-deb)
 docker cp "$CID:/vaultwarden_package/${PACKAGEDIR}.deb" "$DST/${PACKAGEDIR}-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"
