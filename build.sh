@@ -6,6 +6,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SRC="$DIR/git"
 DST="$DIR/dist"
 
+OS_VERSION_NAME="buster"
+DB_TYPE="sqlite"
+ARCH_DIR="amd64"
+PACKAGENAME="vaultwarden"
+PACKAGEDIR="vaultwarden"
+SERVICEUSER="vaultwarden"
+EXECUTABLENAME="$PACKAGEDIR"
+
 while getopts ":r:o:d:a:p:i:u:e:" opt; do
   case $opt in
     r) REF="$OPTARG"
@@ -29,15 +37,8 @@ while getopts ":r:o:d:a:p:i:u:e:" opt; do
   esac
 done
 if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
-if [ -z "$OS_VERSION_NAME" ]; then OS_VERSION_NAME='buster'; fi
-if [ -z "$DB_TYPE" ]; then DB_TYPE="sqlite"; fi
-if [ -z "$ARCH_DIR" ]; then ARCH_DIR="amd64"; fi
 ARCH=$ARCH_DIR
 if [[ "$ARCH" =~ ^arm ]]; then ARCH="armhf"; fi
-if [ -z "$PACKAGENAME" ]; then PACKAGENAME="vaultwarden"; fi
-if [ -z "$PACKAGEDIR" ]; then PACKAGEDIR="vaultwarden"; fi
-if [ -z "$SERVICEUSER" ]; then SERVICEUSER="vaultwarden"; fi
-if [ -z "$EXECUTABLENAME" ]; then EXECUTABLENAME="$PACKAGEDIR"; fi
 
 # Clone vaultwarden
 if [ ! -d "$SRC" ]; then
