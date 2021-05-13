@@ -35,7 +35,7 @@ if [ -z "$ARCH_DIR" ]; then ARCH_DIR="amd64"; fi
 ARCH=$ARCH_DIR
 if [[ "$ARCH" =~ ^arm ]]; then ARCH="armhf"; fi
 if [ -z "$PACKAGENAME" ]; then PACKAGENAME="vaultwarden"; fi
-if [ -z "$PACKAGEDIR" ]; then SERVICEUSER="vaultwarden"; fi
+if [ -z "$PACKAGEDIR" ]; then PACKAGEDIR="vaultwarden"; fi
 if [ -z "$SERVICEUSER" ]; then SERVICEUSER="vaultwarden"; fi
 if [ -z "$EXECUTABLENAME" ]; then EXECUTABLENAME="$PACKAGEDIR"; fi
 
