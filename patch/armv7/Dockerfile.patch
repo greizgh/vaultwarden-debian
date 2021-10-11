@@ -1,12 +1,13 @@
 --- git/docker/armv7/Dockerfile	2021-02-12 11:45:13.763372371 +0100
 +++ Dockerfile	2021-02-12 12:25:50.078877369 +0100
-@@ -157,3 +157,23 @@
+@@ -157,3 +157,24 @@
  WORKDIR /
  ENTRYPOINT ["/usr/bin/dumb-init", "--"]
  CMD ["/start.sh"]
 +
 +####################### dpkg target ##########################
 +FROM build as dpkg
++RUN mkdir /outdir
 +RUN mkdir -p /vaultwarden_package/DEBIAN
 +RUN mkdir -p /vaultwarden_package/usr/local/bin
 +RUN mkdir -p /vaultwarden_package/usr/lib/systemd/system
@@ -23,4 +24,4 @@
 +COPY --from=vault /web-vault /vaultwarden_package/usr/share/@@PACKAGEDIR@@/web-vault
 +COPY --from=build app/target/armv7-unknown-linux-gnueabihf/release/vaultwarden /vaultwarden_package/usr/local/bin/@@EXECUTABLENAME@@
 +
-+RUN dpkg-deb --build . @@PACKAGEDIR@@.deb
++RUN dpkg-deb --build . /outdir/@@PACKAGEDIR@@.deb

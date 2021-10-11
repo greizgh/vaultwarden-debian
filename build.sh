@@ -110,5 +110,5 @@ echo "[INFO] docker build -t vaultwarden-deb $DIR --build-arg DB=$DB_TYPE"
 docker build -t vaultwarden-deb "$SRC" --build-arg DB="$DB_TYPE" --target dpkg -f "$DIR/Dockerfile"
 
 CID=$(docker run -d vaultwarden-deb)
-docker cp "$CID:/vaultwarden_package/${PACKAGEDIR}.deb" "$DST/${PACKAGEDIR}-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"
+docker cp "$CID:/outdir/${PACKAGEDIR}.deb" "$DST/${PACKAGEDIR}-${OS_VERSION_NAME}-${REF}-${DB_TYPE}-${ARCH_DIR}.deb"
 docker rm "$CID"

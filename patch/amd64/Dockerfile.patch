@@ -1,12 +1,13 @@
 --- git/docker/amd64/Dockerfile	2021-02-12 11:45:13.762372371 +0100
 +++ Dockerfile	2021-02-12 11:59:56.727518522 +0100
-@@ -111,3 +111,23 @@
+@@ -111,3 +111,24 @@
  WORKDIR /
  ENTRYPOINT ["/usr/bin/dumb-init", "--"]
  CMD ["/start.sh"]
 +
 +####################### dpkg target ##########################
 +FROM build as dpkg
++RUN mkdir /outdir
 +RUN mkdir -p /vaultwarden_package/DEBIAN
 +RUN mkdir -p /vaultwarden_package/usr/local/bin
 +RUN mkdir -p /vaultwarden_package/usr/lib/systemd/system
@@ -23,4 +24,4 @@
 +COPY --from=vault /web-vault /vaultwarden_package/usr/share/@@PACKAGEDIR@@/web-vault
 +COPY --from=build app/target/release/vaultwarden /vaultwarden_package/usr/local/bin/@@EXECUTABLENAME@@
 +
-+RUN dpkg-deb --build . @@PACKAGEDIR@@.deb
++RUN dpkg-deb --build . /outdir/@@PACKAGEDIR@@.deb
