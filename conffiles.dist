@@ -1,2 +1,1 @@
-/etc/@@PACKAGEDIR@@/Rocket.toml
 /etc/@@PACKAGEDIR@@/config.env
