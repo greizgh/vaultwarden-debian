@@ -2,4 +2,3 @@
 DIR_MODE=0700 adduser --system --group --home /var/lib/@@PACKAGEDIR@@ @@SERVICEUSER@@
 chmod 700 /var/lib/@@PACKAGEDIR@@
 chmod 600 /etc/@@PACKAGEDIR@@/config.env
-chmod 600 /etc/@@PACKAGEDIR@@/Rocket.toml
