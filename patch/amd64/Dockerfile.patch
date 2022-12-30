@@ -1,10 +1,9 @@
---- git/docker/amd64/Dockerfile	2021-02-12 11:45:13.762372371 +0100
-+++ Dockerfile	2021-02-12 11:59:56.727518522 +0100
-@@ -111,3 +111,23 @@
- WORKDIR /
- ENTRYPOINT ["/usr/bin/dumb-init", "--"]
- CMD ["/start.sh"]
-+
+--- git/docker/amd64/Dockerfile	2022-12-24 16:59:28.554597529 +0100
++++ Dockerfile	2022-12-24 18:12:24.069923032 +0100
+@@ -84,6 +84,26 @@
+ # hadolint ignore=DL3059
+ RUN cargo build --features ${DB} --release
+ 
 +####################### dpkg target ##########################
 +FROM build as dpkg
 +RUN mkdir /outdir
@@ -24,3 +23,7 @@
 +COPY --from=build app/target/release/vaultwarden /vaultwarden_package/usr/local/bin/@@EXECUTABLENAME@@
 +
 +RUN dpkg-deb --build . /outdir/@@PACKAGEDIR@@.deb
++
+ ######################## RUNTIME IMAGE  ########################
+ # Create a new stage with a minimal image
+ # because we already have a binary built
