@@ -87,8 +87,8 @@ sed "$DIR/patch/$ARCH_DIR/Dockerfile.patch" -f <( echo "$SEDCOMMANDS" ) | \
 patch "$SRC/docker/$ARCH_DIR/Dockerfile" --verbose -o "$DIR/Dockerfile" || \
 exit
 
-sed -E "s/(FROM[[:space:]]*rust:)[^[:space:]]+(.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
-sed -E "s/(FROM[[:space:]]*debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
+sed -E "s/(FROM[[:space:]]*docker.io\/library\/rust:[^-]+)[^[:space:]]+(.+)/\1-${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
+sed -E "s/(FROM[[:space:]]*docker.io\/library\/debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
 
 # Prepare Controlfile
 CONTROL="$DEBIANDIR/control"
