@@ -3,5 +3,6 @@ Architecture: -
 Maintainer: Greizgh <greizgh+vaultwarden@ephax.org>
 Priority: optional
 Version: -
+Depends: @@VAULTWARDEN_DEPS@@, systemd | systemd-standalone-sysusers | opensysusers, systemd | default-systemd-tmpfiles | systemd-tmpfiles | systemd-standalone-tmpfiles
 Description: Unofficial Bitwarden compatible server written in Rust
 Homepage: https://github.com/greizgh/vaultwarden-debian

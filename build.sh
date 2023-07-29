@@ -6,7 +6,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SRC="$DIR/git"
 DST="$DIR/dist"
 
-OS_VERSION_NAME="buster"
+OS_VERSION_NAME="bullseye"
 DB_TYPE="sqlite"
 ARCH_DIR="amd64"
 PACKAGENAME="vaultwarden"
@@ -39,6 +39,37 @@ done
 if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 ARCH=$ARCH_DIR
 if [[ "$ARCH" =~ ^arm ]]; then ARCH="armhf"; fi
+
+VAULTWARDEN_DEPS="libc6, libgcc-s1"
+# Setup libssl dependency correctly depending on Debian version.
+# Also use this opportunity to exit if the user is trying to create a package for anything besides bullseye and bookworm
+case $OS_VERSION_NAME in
+  bullseye)
+    VAULTWARDEN_DEPS="$VAULTWARDEN_DEPS, libssl1.1"
+    ;;
+
+  bookworm)
+    VAULTWARDEN_DEPS="$VAULTWARDEN_DEPS, libssl3"
+    ;;
+
+  *)
+    echo "ERROR: vaultwarden-debian only supports building packages for Debian Bullseye and Bookworm currently"
+    exit 1
+    ;;
+esac
+
+# mysql and postgresql need additional libraries. Sqlite support is built into the vaultwarden binary
+case $DB_TYPE in
+  mysql)
+    VAULTWARDEN_DEPS="$VAULTWARDEN_DEPS, libmariadb3"
+    RECOMMENDS="mariadb-server"
+    ;;
+
+  postgresql)
+    VAULTWARDEN_DEPS="$VAULTWARDEN_DEPS, libpq5"
+    RECOMMENDS="postgresql"
+    ;;
+esac
 
 # Clone vaultwarden
 if [ ! -d "$SRC" ]; then
@@ -80,6 +111,14 @@ chmod 644 "$DEBIANDIR/conffiles"
 sed postinst.dist > "$DEBIANDIR/postinst" -f <( echo "$SEDCOMMANDS" ) || exit
 chmod 755 "$DEBIANDIR/postinst"
 
+# Prepare postrm
+sed postrm.dist > "$DEBIANDIR/postrm" -f <( echo "$SEDCOMMANDS" ) || exit
+chmod 755 "$DEBIANDIR/postrm"
+
+# Prepare prerm
+sed prerm.dist > "$DEBIANDIR/prerm" -f <( echo "$SEDCOMMANDS" ) || exit
+chmod 755 "$DEBIANDIR/prerm"
+
 mkdir -p "$DST"
 
 # Prepare Dockerfile
@@ -94,8 +133,12 @@ sed -E "s/(FROM[[:space:]]*docker.io\/library\/debian:)[^-]+(-.+)/\1${OS_VERSION
 CONTROL="$DEBIANDIR/control"
 cp "$DIR/control.dist" "$CONTROL"
 sed -i "s/@@PACKAGENAME@@/$PACKAGENAME/g" "$CONTROL"
+sed -i "s/@@VAULTWARDEN_DEPS@@/$VAULTWARDEN_DEPS/g" "$CONTROL"
 sed -i "s/Version:.*/Version: $REF-1/" "$CONTROL"
 sed -i "s/Architecture:.*/Architecture: $ARCH/" "$CONTROL"
+if [ ! -z "$RECOMMENDS" ]; then
+  echo "Recommends: $RECOMMENDS" >> "$CONTROL"
+fi
 
 # Prepare Systemd-unit
 SYSTEMD_UNIT="$DEBIANDIR/$EXECUTABLENAME.service"
@@ -105,6 +148,14 @@ if [ "$DB_TYPE" = "mysql" ]; then
 elif [ "$DB_TYPE" = "postgresql" ]; then
   sed -i "s/After=network.target/After=network.target postgresql.service\nRequires=postgresql.service/g" "$SYSTEMD_UNIT"
 fi
+
+# Prepare sysusers
+sed sysusers.conf > "$DEBIANDIR/sysusers.conf" -f <( echo "$SEDCOMMANDS" ) || exit
+chmod 644 "$DEBIANDIR/sysusers.conf"
+
+# Prepare tmpfiles
+sed tmpfiles.conf > "$DEBIANDIR/tmpfiles.conf" -f <( echo "$SEDCOMMANDS" ) || exit
+chmod 644 "$DEBIANDIR/tmpfiles.conf"
 
 echo "[INFO] docker build -t vaultwarden-deb $DIR --build-arg DB=$DB_TYPE"
 docker build -t vaultwarden-deb "$SRC" --build-arg DB="$DB_TYPE" --target dpkg -f "$DIR/Dockerfile"
