@@ -1,11 +1,11 @@
 [Unit]
-Description=Bitwarden API server
+Description=Vaultwarden API server
 After=network.target
 
 [Service]
 Type=simple
 User=@@SERVICEUSER@@
-ExecStart=/usr/local/bin/@@EXECUTABLENAME@@
+ExecStart=/usr/bin/@@EXECUTABLENAME@@
 PrivateTmp=true
 PrivateDevices=true
 ProtectHome=true

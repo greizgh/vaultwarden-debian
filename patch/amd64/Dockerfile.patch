@@ -1,26 +1,31 @@
---- git/docker/amd64/Dockerfile	2022-12-24 16:59:28.554597529 +0100
-+++ Dockerfile	2022-12-24 18:12:24.069923032 +0100
-@@ -84,6 +84,26 @@
- # hadolint ignore=DL3059
+--- git/docker/amd64/Dockerfile	2023-07-29 15:42:52.131945764 -0500
++++ Dockerfile	2023-07-29 16:18:19.915440456 -0500
+@@ -77,6 +77,31 @@
+ # your actual source files being built
  RUN cargo build --features ${DB} --release
  
 +####################### dpkg target ##########################
 +FROM build as dpkg
 +RUN mkdir /outdir
 +RUN mkdir -p /vaultwarden_package/DEBIAN
-+RUN mkdir -p /vaultwarden_package/usr/local/bin
 +RUN mkdir -p /vaultwarden_package/usr/lib/systemd/system
++RUN mkdir -p /vaultwarden_package/usr/lib/sysusers.d
++RUN mkdir -p /vaultwarden_package/usr/lib/tmpfiles.d
 +RUN mkdir -p /vaultwarden_package/etc/@@PACKAGEDIR@@
 +RUN mkdir -p /vaultwarden_package/usr/share/@@PACKAGEDIR@@
 +
 +WORKDIR /vaultwarden_package
 +COPY debian/control /vaultwarden_package/DEBIAN/control
 +COPY debian/postinst /vaultwarden_package/DEBIAN/postinst
++COPY debian/postrm /vaultwarden_package/DEBIAN/postrm
++COPY debian/prerm /vaultwarden_package/DEBIAN/prerm
 +COPY debian/conffiles /vaultwarden_package/DEBIAN/conffiles
-+COPY debian/config.env /vaultwarden_package/etc/@@PACKAGEDIR@@
++COPY --chmod=600 debian/config.env /vaultwarden_package/etc/@@PACKAGEDIR@@
 +COPY debian/@@EXECUTABLENAME@@.service /vaultwarden_package/usr/lib/systemd/system
++COPY debian/sysusers.conf /vaultwarden_package/usr/lib/sysusers.d/@@PACKAGEDIR@@.conf
++COPY debian/tmpfiles.conf /vaultwarden_package/usr/lib/tmpfiles.d/@@PACKAGEDIR@@.conf
 +COPY --from=vault /web-vault /vaultwarden_package/usr/share/@@PACKAGEDIR@@/web-vault
-+COPY --from=build app/target/release/vaultwarden /vaultwarden_package/usr/local/bin/@@EXECUTABLENAME@@
++COPY --from=build app/target/release/vaultwarden /vaultwarden_package/usr/bin/@@EXECUTABLENAME@@
 +
 +RUN dpkg-deb --build . /outdir/@@PACKAGEDIR@@.deb
 +
