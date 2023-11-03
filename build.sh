@@ -8,13 +8,14 @@ DST="$DIR/dist"
 
 OS_VERSION_NAME="bullseye"
 DB_TYPE="sqlite"
+SYSTEMD_DB="true"
 ARCH_DIR="amd64"
 PACKAGENAME="vaultwarden"
 PACKAGEDIR="vaultwarden"
 SERVICEUSER="vaultwarden"
 EXECUTABLENAME="$PACKAGEDIR"
 
-while getopts ":r:o:d:a:p:i:u:e:" opt; do
+while getopts ":r:o:d:a:p:i:u:e:s" opt; do
   case $opt in
     r) REF="$OPTARG"
     ;;
@@ -31,6 +32,8 @@ while getopts ":r:o:d:a:p:i:u:e:" opt; do
     u) SERVICEUSER="$OPTARG"
     ;;
     e) EXECUTABLENAME="$OPTARG"
+    ;;
+    s) SYSTEMD_DB="false"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2 ; exit
     ;;
@@ -143,9 +146,9 @@ fi
 # Prepare Systemd-unit
 SYSTEMD_UNIT="$DEBIANDIR/$EXECUTABLENAME.service"
 sed "$DIR/service.dist" > "$SYSTEMD_UNIT" -f <( echo "$SEDCOMMANDS" ) || exit
-if [ "$DB_TYPE" = "mysql" ]; then
+if [ "$SYSTEMD_DB" = true ] && [ "$DB_TYPE" = "mysql" ]; then
   sed -i "s/After=network.target/After=network.target mysqld.service\nRequires=mysqld.service/g" "$SYSTEMD_UNIT"
-elif [ "$DB_TYPE" = "postgresql" ]; then
+elif [ "$SYSTEMD_DB" = true ] && [ "$DB_TYPE" = "postgresql" ]; then
   sed -i "s/After=network.target/After=network.target postgresql.service\nRequires=postgresql.service/g" "$SYSTEMD_UNIT"
 fi
 
