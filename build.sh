@@ -124,9 +124,12 @@ chmod 755 "$DEBIANDIR/prerm"
 
 mkdir -p "$DST"
 
-# Prepare Dockerfile
+## Prepare Dockerfile
+pushd "$SRC/docker" || exit
+make
+popd || exit
 sed "$DIR/patch/$ARCH_DIR/Dockerfile.patch" -f <( echo "$SEDCOMMANDS" ) | \
-patch "$SRC/docker/$ARCH_DIR/Dockerfile" --verbose -o "$DIR/Dockerfile" || \
+patch "$SRC/docker/Dockerfile.debian" --verbose -o "$DIR/Dockerfile" || \
 exit
 
 sed -E "s/(FROM[[:space:]]*docker.io\/library\/rust:[^-]+)[^[:space:]]+(.+)/\1-${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"

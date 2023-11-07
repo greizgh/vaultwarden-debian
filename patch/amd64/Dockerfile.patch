@@ -25,7 +25,7 @@
 +COPY debian/sysusers.conf /vaultwarden_package/usr/lib/sysusers.d/@@PACKAGEDIR@@.conf
 +COPY debian/tmpfiles.conf /vaultwarden_package/usr/lib/tmpfiles.d/@@PACKAGEDIR@@.conf
 +COPY --from=vault /web-vault /vaultwarden_package/usr/share/@@PACKAGEDIR@@/web-vault
-+COPY --from=build app/target/release/vaultwarden /vaultwarden_package/usr/bin/@@EXECUTABLENAME@@
++COPY --from=build app/target/final/vaultwarden /vaultwarden_package/usr/bin/@@EXECUTABLENAME@@
 +
 +RUN dpkg-deb --build . /outdir/@@PACKAGEDIR@@.deb
 +
