@@ -125,6 +125,9 @@ chmod 755 "$DEBIANDIR/prerm"
 mkdir -p "$DST"
 
 # Prepare Dockerfile
+pushd "$SRC/docker" || exit
+make
+popd || exit
 sed "$DIR/patch/$ARCH_DIR/Dockerfile.patch" -f <( echo "$SEDCOMMANDS" ) | \
 patch "$SRC/docker/Dockerfile.debian" --verbose -o "$DIR/Dockerfile" || \
 exit
