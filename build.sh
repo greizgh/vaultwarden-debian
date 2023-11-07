@@ -132,8 +132,8 @@ sed "$DIR/patch/$ARCH_DIR/Dockerfile.patch" -f <( echo "$SEDCOMMANDS" ) | \
 patch "$SRC/docker/Dockerfile.debian" --verbose -o "$DIR/Dockerfile" || \
 exit
 
-sed -E "s/(FROM[[:space:]]*docker.io\/library\/rust:[^-]+)[^[:space:]]+(.+)/\1-${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
-sed -E "s/(FROM[[:space:]]*docker.io\/library\/debian:)[^-]+(-.+)/\1${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
+sed "/docker.io\/library\/rust/s/bookworm/${OS_VERSION_NAME}/g" -i "$DIR/Dockerfile"
+sed "/docker.io\/library\/debian/s/bookworm/${OS_VERSION_NAME}/g" -i "$DIR/Dockerfile"
 
 # Prepare Controlfile
 CONTROL="$DEBIANDIR/control"
