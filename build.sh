@@ -126,7 +126,7 @@ mkdir -p "$DST"
 
 # Prepare Dockerfile
 sed "$DIR/patch/$ARCH_DIR/Dockerfile.patch" -f <( echo "$SEDCOMMANDS" ) | \
-patch "$SRC/docker/$ARCH_DIR/Dockerfile" --verbose -o "$DIR/Dockerfile" || \
+patch "$SRC/docker/Dockerfile.debian" --verbose -o "$DIR/Dockerfile" || \
 exit
 
 sed -E "s/(FROM[[:space:]]*docker.io\/library\/rust:[^-]+)[^[:space:]]+(.+)/\1-${OS_VERSION_NAME}\2/g" -i "$DIR/Dockerfile"
@@ -139,7 +139,7 @@ sed -i "s/@@PACKAGENAME@@/$PACKAGENAME/g" "$CONTROL"
 sed -i "s/@@VAULTWARDEN_DEPS@@/$VAULTWARDEN_DEPS/g" "$CONTROL"
 sed -i "s/Version:.*/Version: $REF-1/" "$CONTROL"
 sed -i "s/Architecture:.*/Architecture: $ARCH/" "$CONTROL"
-if [ ! -z "$RECOMMENDS" ]; then
+if [ -n "$RECOMMENDS" ]; then
   echo "Recommends: $RECOMMENDS" >> "$CONTROL"
 fi
 
