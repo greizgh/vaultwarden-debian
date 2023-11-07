@@ -4,15 +4,15 @@ After=network.target
 
 [Service]
 Type=simple
-User=@@SERVICEUSER@@
-ExecStart=/usr/bin/@@EXECUTABLENAME@@
+User=vaultwarden
+ExecStart=/usr/bin/vaultwarden
 PrivateTmp=true
 PrivateDevices=true
 ProtectHome=true
 ProtectSystem=strict
-WorkingDirectory=/etc/@@PACKAGEDIR@@
-ReadWriteDirectories=/var/lib/@@PACKAGEDIR@@
-EnvironmentFile=/etc/@@PACKAGEDIR@@/config.env
+WorkingDirectory=/etc/vaultwarden
+ReadWriteDirectories=/var/lib/vaultwarden
+EnvironmentFile=/etc/vaultwarden/config.env
 
 [Install]
 WantedBy=multi-user.target
