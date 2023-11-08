@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=vaultwarden
-ExecStart=/usr/bin/vaultwarden
+ExecStart=/usr/local/bin/vaultwarden
 PrivateTmp=true
 PrivateDevices=true
 ProtectHome=true
