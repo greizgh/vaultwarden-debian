@@ -27,7 +27,7 @@ while getopts ":r:d:a:s" opt; do
 done
 if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 
-VAULTWARDEN_DEPS="libc6, libgcc-s1, libssl1.1"
+VAULTWARDEN_DEPS="libc6, libgcc-s1, libssl3"
 
 # mysql and postgresql need additional libraries. Sqlite support is built into the vaultwarden binary
 case $DB_TYPE in
