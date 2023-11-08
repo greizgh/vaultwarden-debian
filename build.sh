@@ -27,17 +27,13 @@ while getopts ":r:d:a:s" opt; do
 done
 if [ -z "$REF" ]; then REF=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 1-); fi
 
-VAULTWARDEN_DEPS="libc6, libgcc-s1, libssl3"
-
 # mysql and postgresql need additional libraries. Sqlite support is built into the vaultwarden binary
 case $DB_TYPE in
   mysql)
-    VAULTWARDEN_DEPS="$VAULTWARDEN_DEPS, libmariadb3"
     RECOMMENDS="mariadb-server"
     ;;
 
   postgresql)
-    VAULTWARDEN_DEPS="$VAULTWARDEN_DEPS, libpq5"
     RECOMMENDS="postgresql"
     ;;
 esac
@@ -48,7 +44,6 @@ mkdir -p "$DST"
 # Prepare Controlfile
 CONTROL="$DEBIANDIR/control"
 cp "$DIR/control.dist" "$CONTROL"
-sed -i "s/@@VAULTWARDEN_DEPS@@/$VAULTWARDEN_DEPS/g" "$CONTROL"
 sed -i "s/Version:.*/Version: $REF-1/" "$CONTROL"
 sed -i "s/Architecture:.*/Architecture: $ARCH/" "$CONTROL"
 if [ -n "$RECOMMENDS" ]; then
