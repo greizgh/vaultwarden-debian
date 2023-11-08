@@ -41,6 +41,13 @@ esac
 DEBIANDIR="$DIR/debian"
 mkdir -p "$DST"
 
+CONFIG="$DEBIANDIR/config.env"
+confTmpl="https://raw.githubusercontent.com/dani-garcia/vaultwarden/$REF/.env.template"
+curl -s "$confTmpl" > "$CONFIG"
+sed -i "s#\# DATA_FOLDER=data#DATA_FOLDER=/var/lib/vaultwarden#" "$CONFIG"
+sed -i "s#\# WEB_VAULT_FOLDER=web-vault/#WEB_VAULT_FOLDER=/usr/share/vaultwarden/web-vault/#" "$CONFIG"
+sed -i "s/Uncomment any of the following lines to change the defaults/Uncomment any of the following lines to change the defaults\n\n## Warning\n## The default systemd-unit does not allow any custom directories.\n## Be sure to check if the service has appropriate permissions before you set custom paths./g" "$CONFIG"
+
 # Prepare Controlfile
 CONTROL="$DEBIANDIR/control"
 cp "$DIR/control.dist" "$CONTROL"

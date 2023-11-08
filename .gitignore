@@ -1,2 +1,3 @@
 dist/
 debian/control
+debian/config.env
