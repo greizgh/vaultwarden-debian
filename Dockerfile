@@ -1,5 +1,6 @@
 ARG ref
-FROM vaultwarden/server:$ref
+ARG img="vaultwarden/server"
+FROM $img:$ref
 RUN mkdir /outdir
 RUN mkdir -p /vaultwarden_package/DEBIAN
 RUN mkdir -p /vaultwarden_package/usr/local/bin

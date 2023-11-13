@@ -21,6 +21,7 @@ cd vaultwarden-debian
 ### Options
 
 - `-r`: specify vaultwarden version, it will default to the latest release
+- `-i`: specify base image (default to `vaultwarden/server`)
 - `-a`: override architecture (default to `amd64`), read below
 - `-d`: DB type, can be `sqlite`(default), `mysql` or `postgresql`
 - `-s`: do not wait for DB in systemd service (only relevant for `mysql` or `postgresql`)
@@ -30,6 +31,10 @@ The `build.sh` script will reuse upstream binary from release images.
 Building for will target the same architecture than the docker daemon's one.
 In order to build for arm64, you need an arm64 docker host.
 Then pass the `-a arm64` flag to properly set the control file (this will only impact the control file, this is NOT cross compilation).
+
+### Customizing the binary
+
+In case you want to customize the binary, [follow upstream build guide](https://github.com/dani-garcia/vaultwarden/tree/main/docker#vaultwarden-container-building) and pass the `-i` flag to `build.sh`.
 
 
 ## Post installation

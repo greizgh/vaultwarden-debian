@@ -10,14 +10,17 @@ RECOMMENDS=""
 DB_TYPE="sqlite"
 SYSTEMD_DB="true"
 ARCH="amd64"
+IMG="vaultwarden/server"
 
-while getopts ":r:d:a:s" opt; do
+while getopts ":r:d:a:si:" opt; do
   case $opt in
     r) REF="$OPTARG"
     ;;
     d) DB_TYPE="$OPTARG"
     ;;
     a) ARCH="$OPTARG"
+    ;;
+    i) IMG="$OPTARG"
     ;;
     s) SYSTEMD_DB="false"
     ;;
@@ -66,7 +69,7 @@ elif [ "$SYSTEMD_DB" = true ] && [ "$DB_TYPE" = "postgresql" ]; then
 fi
 
 out=$(mktemp -d)
-docker build -t vaultwarden-deb --build-arg ref="$REF" .
+docker build -t vaultwarden-deb --build-arg ref="$REF" --build-arg img="$IMG" .
 docker run --rm -v "$out:/outdir" vaultwarden-deb
 mv "$out/vaultwarden.deb" "$DST/vaultwarden-${REF}-${DB_TYPE}-${ARCH}.deb"
 rmdir "$out"
