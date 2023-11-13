@@ -1,8 +1,3 @@
-git/
 dist/
-debian/config.env
 debian/control
-debian/*.service
-debian/conffiles
-debian/postinst
-Dockerfile
+debian/config.env

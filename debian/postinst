@@ -3,30 +3,30 @@ set -e
 
 # Automatically added by dh_installsysusers/13.11.4
 if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
-   systemd-sysusers ${DPKG_ROOT:+--root="$DPKG_ROOT"} @@PACKAGEDIR@@.conf
+   systemd-sysusers ${DPKG_ROOT:+--root="$DPKG_ROOT"} vaultwarden.conf
 fi
 
 if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
 	if [ -x "$(command -v systemd-tmpfiles)" ]; then
-		systemd-tmpfiles ${DPKG_ROOT:+--root="$DPKG_ROOT"} --create @@PACKAGEDIR@@.conf >/dev/null || true
+		systemd-tmpfiles ${DPKG_ROOT:+--root="$DPKG_ROOT"} --create vaultwarden.conf >/dev/null || true
 	fi
 fi
 
 if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
-	if deb-systemd-helper --quiet is-enabled '@@PACKAGEDIR@@.service'; then
+	if deb-systemd-helper --quiet is-enabled 'vaultwarden.service'; then
 		# Creates new symlinks on upgrades if the unit file has changed.
-		deb-systemd-helper enable '@@PACKAGEDIR@@.service' >/dev/null || true
+		deb-systemd-helper enable 'vaultwarden.service' >/dev/null || true
 	else
 		# Update the statefile to add new symlinks (if any), which need to be
 		# cleaned up on purge. Also remove old symlinks.
-		deb-systemd-helper update-state '@@PACKAGEDIR@@.service' >/dev/null || true
+		deb-systemd-helper update-state 'vaultwarden.service' >/dev/null || true
 	fi
 fi
 if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
 	if [ -d /run/systemd/system ]; then
 		systemctl --system daemon-reload >/dev/null || true
-		if systemctl --system is-active '@@PACKAGEDIR@@.service'; then
-			deb-systemd-invoke restart '@@PACKAGEDIR@@.service' >/dev/null || true
+		if systemctl --system is-active 'vaultwarden.service'; then
+			deb-systemd-invoke restart 'vaultwarden.service' >/dev/null || true
 		fi
 	fi
 fi

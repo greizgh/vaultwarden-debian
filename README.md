@@ -8,8 +8,6 @@ This repository will help you produce a debian package.
 
 Make sure you have the required build dependencies:
 * docker
-* git
-* patch
 * curl
 
 Then:
@@ -17,17 +15,27 @@ Then:
 ```
 git clone https://github.com/greizgh/vaultwarden-debian.git
 cd vaultwarden-debian
-./build.sh -r <version> # target vaultwarden version, example 1.19.0
+./build.sh -r <version> # target vaultwarden version >= 1.30.0
 ```
 
-The `build.sh` script will build vaultwarden for the same Debian version which targets vaultwarden.
-That means, to build vaultwarden v1.19.0, make sure to checkout tag `v1.19.0` of this project.
+### Options
 
-To compile for a different Debian version, specify the release name (e.g. Buster, Bullseye) using the `-o` option. You can compile for arm32v7 or amd64 architecture using the `-a` option, only the Buster (default) release of debian is supported by arm32v7.
+- `-r`: specify vaultwarden version, it will default to the latest release
+- `-i`: specify base image (default to `vaultwarden/server`)
+- `-a`: override architecture (default to `amd64`), read below
+- `-d`: DB type, can be `sqlite`(default), `mysql` or `postgresql`
+- `-s`: do not wait for DB in systemd service (only relevant for `mysql` or `postgresql`)
 
-```
-./build.sh -o bullseye
-```
+The `build.sh` script will reuse upstream binary from release images.
+
+Building for will target the same architecture than the docker daemon's one.
+In order to build for arm64, you need an arm64 docker host.
+Then pass the `-a arm64` flag to properly set the control file (this will only impact the control file, this is NOT cross compilation).
+
+### Customizing the binary
+
+In case you want to customize the binary, [follow upstream build guide](https://github.com/dani-garcia/vaultwarden/tree/main/docker#vaultwarden-container-building) and pass the `-i` flag to `build.sh`.
+
 
 ## Post installation
 
